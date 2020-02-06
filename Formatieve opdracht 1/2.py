@@ -10,7 +10,7 @@ def checkStrings(s1, s2):
     for i in range(0, shortest):
         if s1[i] != s2[i]:
             return f"Zit een verschil op index {i}"
-    return "Er is geen verschil"
+    return "Er is geen verschil  "
 
 
 # Let op niet spaties
