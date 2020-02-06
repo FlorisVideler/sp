@@ -3,7 +3,7 @@ def avg(lst):
     # return sum(lst) / len(lst)
 
     # The hard way
-    lstsum  = 0
+    lstsum = 0
     lstlen = 0
     for i in lst:
         lstsum += i
