@@ -1,3 +1,5 @@
+#Mijn eigen oplossingen met 1 while loop
+
 def pir(aantal):
     i = 1
     back = False
@@ -25,10 +27,45 @@ def pirrev(aantal):
             i += 1
 
 
-pir(int(input("Hoe groot?")))
-pirrev(int(input("Hoe groot?")))
+# 2 for loops
+def twofors(aantal):
+    for i in range(1, aantal):
+        print("*" * i)
+    for i in range(aantal, 0, -1):
+        print("*" * i)
+
+def twoforsrev(aantal):
+    for i in range(1, aantal):
+        print(" " * (aantal-i) + "*" * i)
+    for i in range(aantal, 0, -1):
+        print(" " * (aantal-i) + "*" * i)
 
 
+# 2 while loops
+def twowhiles(aantal):
+    i = 1
+    while i <= aantal-1:
+        print("*" * i)
+        i += 1
+    while i > 0:
+        print("*" * i)
+        i -= 1
+
+def twowhilesrev(aantal):
+    i = 1
+    while i <= aantal - 1:
+        print(" " * (aantal-i) + "*" * i)
+        i += 1
+    while i > 0:
+        print(" " * (aantal-i) + "*" * i)
+        i -= 1
+
+
+
+# pir(int(input("Hoe groot?")))
+# pirrev(int(input("Hoe groot?")))
+
+twowhilesrev(5)
 
 
 
