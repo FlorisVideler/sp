@@ -62,9 +62,13 @@ def twowhilesrev(aantal):
 
 
 
-# pir(int(input("Hoe groot?")))
-# pirrev(int(input("Hoe groot?")))
+pir(int(input("Hoe groot?")))
+pirrev(int(input("Hoe groot?")))
 
+twofors(5)
+twoforsrev(5)
+
+twowhiles(5)
 twowhilesrev(5)
 
 
