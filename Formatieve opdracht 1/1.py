@@ -1,5 +1,4 @@
 # Mijn eigen oplossingen met 1 while loop
-
 def pir(aantal):
     i = 1
     back = False
@@ -13,6 +12,7 @@ def pir(aantal):
             i += 1
 
 
+# Mijn eigen oplossingen met 1 while loop (reversed)
 def pirrev(aantal):
     i = 1
     back = False
@@ -35,6 +35,7 @@ def twofors(aantal):
         print("*" * i)
 
 
+# 2 for loops (reversed)
 def twoforsrev(aantal):
     for i in range(1, aantal):
         print(" " * (aantal - i) + "*" * i)
@@ -53,6 +54,7 @@ def twowhiles(aantal):
         i -= 1
 
 
+# 2 while loops (reversed)
 def twowhilesrev(aantal):
     i = 1
     while i <= aantal - 1:

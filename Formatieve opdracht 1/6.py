@@ -1,8 +1,8 @@
 def avg(lst):
-    # The easy way
+    # The easy way:
     # return sum(lst) / len(lst)
 
-    # The hard way
+    # The hard way:
     lstsum = 0
     lstlen = 0
     for i in lst:

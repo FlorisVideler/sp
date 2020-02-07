@@ -3,7 +3,6 @@ def count(lst, x):
     for i in lst:
         if i == x:
             cntr += 1
-
     return cntr
 
 
