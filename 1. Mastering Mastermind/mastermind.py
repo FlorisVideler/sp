@@ -54,19 +54,18 @@ def menu():
     return who_is_playing, gives_feedback
 
 
-def pc_game():
-    return
-
-
 def player_game():
     board = ""
     steps = 0
     # Set code
-    code = random.sample(colors, k=4)
-    tmpcode = []
-    for i in code:
-        tmpcode.append(i["Afkorting"])
-    code = tmpcode
+    code = []
+    for i in range(0, 4):
+        code.append(colors[random.randint(0,5)]["Afkorting"])
+    # code = random.sample(colors, k=4)
+    # tmpcode = []
+    # for i in code:
+    #     tmpcode.append(i["Afkorting"])
+    # code = tmpcode
     print(code)
     while True:
         print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n=========================================================")
@@ -114,9 +113,9 @@ def player_game():
 
 
 def pc_game(feedback):
-    manual_feedback = True
-    if feedback == "y":
-        manual_feedback = False
+    manual_feedback = False
+    if feedback == "n":
+        manual_feedback = True
     board = ""
     steps = 0
     code = input("Verzin een code: ").upper().replace(" ", "").split(",")
@@ -150,7 +149,23 @@ def random_guess():
     return guess_list
 
 
+def simple_strat():
+    allpos = []
+    
+
+
 def auto_feedback(guesslst, code):
+    # right_color = 0
+    # right_place = 0
+    # for g in range(0,len(guesslst)):
+    #     if guesslst[g] == code[g]:
+    #         right_place += 1
+    #     if guesslst[g] in code:
+    #         right_color += 1
+    # print(right_color, right_place)
+    # right_color = right_color-right_place
+    # print(right_color)
+
     # Check if color is in code
     right_color = 0
     right_place = 0
@@ -165,40 +180,16 @@ def auto_feedback(guesslst, code):
             tmp_code.append(tmp)
     guesslst2 = [x for x in guesslst if x not in tmp_guesslst]
     code2 = [x for x in code if x not in tmp_code]
-    tmp_guesslst.clear()
-    tmp_code.clear()
     for g in range(0, len(guesslst2)):
         if guesslst2[g] in code2:
             right_color += 1
-            # tmp = code[g]
-            # guesslst.remove(tmp)
-            # code.remove(tmp)
-
-    # for g in range(0,len(guesslst)):
-    #     if code[g] == guesslst[g]:
-    #         right_place += 1
-    #         matched.append(code[g])
-    #     elif guesslst[g] in code and matched.count(guesslst[g]) < code.count(guesslst[g]):
-    #         right_color += 1
-    #for g, colors in enumerate(guesslst):
-
-
-    # checked = []
-    # for g, color in enumerate(guesslst):
-    #     if color in code:
-    #         checked.append(color)
-    #         if code.count(color) != checked.count(color):
-    #             if code[g] == guesslst[g]:
-    #                 right_place += 1
-    #             else:
-    #                 right_color += 1
     return right_color, right_place
 
 
 def man_feedback(guesslst, code):
     while True:
         try:
-            print(guesslst)
+            print("{:^10} {:^10} {:^10} {:^10}\n".format(guesslst[0], guesslst[1], guesslst[2], guesslst[3]))
             right_color = int(input("Hoeveel zitten in de code maar niet op de juiste plek? "))
             right_place = int(input("Hoeveel zitten op de juiste plek en hebben de juiste waarde? "))
             if auto_feedback(guesslst, code) != (right_color, right_place):
