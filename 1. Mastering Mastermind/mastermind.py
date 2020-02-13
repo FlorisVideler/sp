@@ -49,6 +49,8 @@ def menu():
                 if gives_feedback.lower() == "y" or gives_feedback.lower() == "n":
                     if gives_feedback.lower() == "n":
                         gives_feedback = "y"
+                    else:
+                        gives_feedback = "n"
                 break
             break
     return who_is_playing, gives_feedback
@@ -60,7 +62,7 @@ def player_game():
     # Set code
     code = []
     for i in range(0, 4):
-        code.append(colors[random.randint(0,5)]["Afkorting"])
+        code.append(colors[random.randint(0, 5)]["Afkorting"])
     # code = random.sample(colors, k=4)
     # tmpcode = []
     # for i in code:
@@ -68,25 +70,29 @@ def player_game():
     # code = tmpcode
     print(code)
     while True:
-        print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n=========================================================")
-        print(board)
-        guess_input = input("Doe een gok: ")
-        guess_list = guess_input.upper().replace(" ", "").split(",")
-        # print(guess_list)
-        guess_response = auto_feedback(guess_list, code)
-        steps += 1
-        right_color_str = ""
-        if guess_response[0] > 0:
-            right_color_str = "?" * guess_response[0]
-        right_place_str = ""
-        if guess_response[1] > 0:
-            right_place_str = "!" * guess_response[1]
-        board += "{:^10} {:^10} {:^10} {:^10} || {:^10} {:^10}\n".format(guess_list[0], guess_list[1],
-                                                                         guess_list[2], guess_list[3],
-                                                                         right_place_str, right_color_str)
-        if guess_response[1] == 4:
-            print(f"WINNER WINNER CHICKEN DINNER.\nJE HEBT DE CODE GERADEN IN {steps} STAPPEN!")
-            break
+        try:
+            print(
+                "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n=========================================================")
+            print(board)
+            guess_input = input("Doe een gok: ")
+            guess_list = guess_input.upper().replace(" ", "").split(",")
+            # print(guess_list)
+            guess_response = auto_feedback(guess_list, code)
+            steps += 1
+            right_color_str = ""
+            if guess_response[0] > 0:
+                right_color_str = "?" * guess_response[0]
+            right_place_str = ""
+            if guess_response[1] > 0:
+                right_place_str = "!" * guess_response[1]
+            board += "{:^10} {:^10} {:^10} {:^10} || {:^10} {:^10}\n".format(guess_list[0], guess_list[1],
+                                                                             guess_list[2], guess_list[3],
+                                                                             right_place_str, right_color_str)
+            if guess_response[1] == 4:
+                print(f"WINNER WINNER CHICKEN DINNER.\nJE HEBT DE CODE GERADEN IN {steps} STAPPEN!")
+                break
+        except Exception as ex:
+            print("GEEN GELDIGE INPUT!")
         # try:
         #     guess_list = guess_input.upper().replace(" ", "").split(",")
         #     # print(guess_list)
@@ -113,19 +119,48 @@ def player_game():
 
 
 def pc_game(feedback):
+    strat = "simple"
     manual_feedback = False
-    if feedback == "n":
+    if feedback == "y":
         manual_feedback = True
     board = ""
     steps = 0
     code = input("Verzin een code: ").upper().replace(" ", "").split(",")
+    if strat == "simple":
+        plausible_codes = []
+        for a in colors:
+            for b in colors:
+                for c in colors:
+                    for d in colors:
+                        plausible_codes.append([a["Afkorting"], b["Afkorting"], c["Afkorting"], d["Afkorting"]])
+    n = 0
+    fb = 0, 0
     while True:
         print(board)
-        guess_list = random_guess()
+        if strat == "random":
+            guess_list = random_guess()
+
         if manual_feedback:
+            if n > 0:
+                plausible_codes = simple_strat(plausible_codes, fb, guess_list)
+            else:
+                n += 1
+            guess_list = random.choice(plausible_codes)
             guess_response = man_feedback(guess_list, code)
+            fb = guess_response
         else:
+            if n > 0:
+                plausible_codes = simple_strat(plausible_codes, fb, guess_list)
+            else:
+                n += 1
+            guess_list = random.choice(plausible_codes)
             guess_response = auto_feedback(guess_list, code)
+            fb = guess_response
+
+        # if manual_feedback:
+        #     guess_response = man_feedback(guess_list, code)
+        # else:
+        #     guess_response = auto_feedback(guess_list, code)
         steps += 1
         right_color_str = ""
         if guess_response[0] > 0:
@@ -149,9 +184,14 @@ def random_guess():
     return guess_list
 
 
-def simple_strat():
-    allpos = []
-    
+def simple_strat(possible_combis, feedback, guess):
+    print(len(possible_combis), " left")
+    new_list = []
+    for i in possible_combis:
+        if auto_feedback(guess, i) == feedback:
+            new_list.append(i)
+    print(len(new_list), " after left")
+    return new_list
 
 
 def auto_feedback(guesslst, code):
@@ -199,7 +239,7 @@ def man_feedback(guesslst, code):
         except ValueError:
             print("Geef geldige waarde")
         except Exception:
-            print("De feedback die je geeft is niet juist!")
+            print("De feedback die je geeft is niet juist! ", auto_feedback(guesslst, code))
 
 
 # def set_code(code):
