@@ -1,4 +1,4 @@
-import random
+import random, ast
 
 colors = [
     {
@@ -119,7 +119,7 @@ def player_game():
 
 
 def pc_game(feedback):
-    strat = "simple"
+    strat = "worstcase"
     manual_feedback = False
     if feedback == "y":
         manual_feedback = True
@@ -127,6 +127,13 @@ def pc_game(feedback):
     steps = 0
     code = input("Verzin een code: ").upper().replace(" ", "").split(",")
     if strat == "simple":
+        plausible_codes = []
+        for a in colors:
+            for b in colors:
+                for c in colors:
+                    for d in colors:
+                        plausible_codes.append([a["Afkorting"], b["Afkorting"], c["Afkorting"], d["Afkorting"]])
+    elif strat == "worstcase":
         plausible_codes = []
         for a in colors:
             for b in colors:
@@ -149,13 +156,23 @@ def pc_game(feedback):
             guess_response = man_feedback(guess_list, code)
             fb = guess_response
         else:
-            if n > 0:
-                plausible_codes = simple_strat(plausible_codes, fb, guess_list)
-            else:
-                n += 1
-            guess_list = random.choice(plausible_codes)
-            guess_response = auto_feedback(guess_list, code)
-            fb = guess_response
+            if strat == "simple":
+                if n > 0:
+                    plausible_codes = simple_strat(plausible_codes, fb, guess_list)
+                else:
+                    n += 1
+                guess_list = random.choice(plausible_codes)
+                guess_response = auto_feedback(guess_list, code)
+                fb = guess_response
+            elif strat == "worstcase":
+                if n > 0:
+                    plausible_codes = simple_strat(plausible_codes, fb, guess_list)
+                else:
+                    n += 1
+                    #Best guess based on expected size
+                guess_list = calcbestcase(plausible_codes)
+                guess_response = auto_feedback(guess_list, code)
+                fb = guess_response
 
         # if manual_feedback:
         #     guess_response = man_feedback(guess_list, code)
@@ -168,6 +185,7 @@ def pc_game(feedback):
         right_place_str = ""
         if guess_response[1] > 0:
             right_place_str = "!" * guess_response[1]
+        print(guess_list)
         board += "{:^10} {:^10} {:^10} {:^10} || {:^10} {:^10}\n".format(guess_list[0], guess_list[1],
                                                                          guess_list[2], guess_list[3],
                                                                          right_place_str, right_color_str)
@@ -193,8 +211,42 @@ def simple_strat(possible_combis, feedback, guess):
     print(len(new_list), " after left")
     return new_list
 
+def calcbestcase(possible_combis):
+    ansdict = {}
+    for i in possible_combis:
+        ansdict[f"{i}"] = []
+        for j in possible_combis:
+            fb = auto_feedback(i, j)
+            ansdict[f"{i}"].append(fb)
+    allhighest = []
+    for key in ansdict:
+        #print(key)
+        unilist = []
+        countlist = []
+        q = ansdict[f"{key}"]
+        for i in q:
+            if i not in unilist:
+                unilist.append(i)
+        for i in unilist:
+            countlist.append(q.count(i))
+        highest = max(countlist)
+        allhighest.append([key, unilist[countlist.index(highest)], highest])
+
+    allcounts = []
+    for i in allhighest:
+        allcounts.append(i[2])
+    lowest = min(allcounts)
+    options = []
+    for i in allhighest:
+        if i[2] <= lowest:
+            options.append(i)
+    print("RETURNING ", ast.literal_eval(options[0][0]))
+    print(len(options), " options left")
+    return ast.literal_eval(options[0][0])
 
 def auto_feedback(guesslst, code):
+    #print(guesslst)
+    #print("g", guesslst)
     # right_color = 0
     # right_place = 0
     # for g in range(0,len(guesslst)):
