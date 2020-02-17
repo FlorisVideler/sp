@@ -1,6 +1,8 @@
 import feedback as fb
 import ast, random
 
+
+#Basicly just do a random guess, pretty easy
 def random_guess(colors):
     guess_list = []
     for i in range(0, 4):
@@ -8,6 +10,7 @@ def random_guess(colors):
     return guess_list
 
 
+#uses the simple strategy from YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
 def simple_algortime(possible_combis, feedback, guess):
     print(len(possible_combis), " left")
     new_list = []
@@ -17,6 +20,7 @@ def simple_algortime(possible_combis, feedback, guess):
     print(len(new_list), " after left")
     return new_list
 
+#uses the worst case strategy from YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
 def best_worstcase_algortime(possible_combis):
     ansdict = {}
     for i in possible_combis:

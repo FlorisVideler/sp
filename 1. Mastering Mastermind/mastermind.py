@@ -67,11 +67,6 @@ def player_game():
     code = []
     for i in range(0, 4):
         code.append(colors[random.randint(0, 5)]["Afkorting"])
-    # code = random.sample(colors, k=4)
-    # tmpcode = []
-    # for i in code:
-    #     tmpcode.append(i["Afkorting"])
-    # code = tmpcode
     print(code)
     while True:
         try:
@@ -192,17 +187,16 @@ def pc_game(feedback, strat):
 
 
 
-# def set_code(code):
-#     code.clear()
-#     code_global = code
-#     # for i in code:
-#     #     code_global.append(i["Afkorting"])
-#     print("Code is set!")
-#     print(code_global)
 
 def explain():
     for c in colors:
         print(f'{c["Kleur"]} = {c["Afkorting"]}')
+
+    print("Beschikbare algoritmes: \n"
+          "-Simple\n"
+          "-Zelfbedacht\n"
+          "-Beste worstcase\n"
+          "-Random")
 
 
 def game():
