@@ -52,8 +52,9 @@ def menu():
                     else:
                         gives_feedback = "n"
                 break
+            pcstrat = input("algoritme moet de pc gebruiken? ")
             break
-    return who_is_playing, gives_feedback
+    return who_is_playing, gives_feedback, pcstrat
 
 
 def player_game():
@@ -118,28 +119,20 @@ def player_game():
         #     print(message)
 
 
-def pc_game(feedback):
-    strat = "worstcase"
+def pc_game(feedback, strat):
+    #strat = "zelfbedacht"
     manual_feedback = False
     if feedback == "y":
         manual_feedback = True
     board = ""
     steps = 0
     code = input("Verzin een code: ").upper().replace(" ", "").split(",")
-    if strat == "simple":
-        plausible_codes = []
-        for a in colors:
-            for b in colors:
-                for c in colors:
-                    for d in colors:
-                        plausible_codes.append([a["Afkorting"], b["Afkorting"], c["Afkorting"], d["Afkorting"]])
-    elif strat == "worstcase":
-        plausible_codes = []
-        for a in colors:
-            for b in colors:
-                for c in colors:
-                    for d in colors:
-                        plausible_codes.append([a["Afkorting"], b["Afkorting"], c["Afkorting"], d["Afkorting"]])
+    plausible_codes = []
+    for a in colors:
+        for b in colors:
+            for c in colors:
+                for d in colors:
+                    plausible_codes.append([a["Afkorting"], b["Afkorting"], c["Afkorting"], d["Afkorting"]])
     n = 0
     fb = 0, 0
     while True:
@@ -173,6 +166,15 @@ def pc_game(feedback):
                 guess_list = calcbestcase(plausible_codes)
                 guess_response = auto_feedback(guess_list, code)
                 fb = guess_response
+            elif strat == "zelfbedacht":
+                if n > 0:
+                    plausible_codes = beetjelogicalijst(plausible_codes, fb, guess_list)
+                else:
+                    n += 1
+                    #Best guess based on expected size
+                guess_list = plausible_codes[0]
+                guess_response = auto_feedback(guess_list, code)
+                fb = guess_response
 
         # if manual_feedback:
         #     guess_response = man_feedback(guess_list, code)
@@ -193,6 +195,34 @@ def pc_game(feedback):
             print(board)
             print(f"WINNER WINNER CHICKEN DINNER.\nJE HEBT DE CODE GERADEN IN {steps} STAPPEN!")
             break
+
+
+def beetjelogicalijst(possible_combis, feedback, guess):
+    new_list = []
+    if guess[0] and guess[1] and guess[2] == guess[3]:
+        lastguessnum = guess[0]
+        if feedback == (0,0):
+            for i in possible_combis:
+                if guess[0] not in i:
+                    new_list.append(i)
+        else:
+            new_list = possible_combis
+        print("INT", int(guess[0]))
+        if int(guess[0]) <= 6:
+            if guess in new_list:
+                print("REMOVED", guess)
+                new_list.remove(guess)
+            new_list.insert(0, [f"{int(guess[0])+1}", f"{int(guess[0])+1}", f"{int(guess[0])+1}", f"{int(guess[0])+1}"])
+    else:
+        new_list = possible_combis
+        new_list.remove(guess)
+        random.shuffle(new_list)
+    return new_list
+
+
+def beetjelogica():
+
+    return
 
 
 def random_guess():
