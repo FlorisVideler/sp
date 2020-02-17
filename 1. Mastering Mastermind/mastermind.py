@@ -1,4 +1,6 @@
 import random, ast
+import mastermindalgo
+import feedback as fb
 
 colors = [
     {
@@ -39,6 +41,7 @@ code_global = []
 def menu():
     print("Welkom to mastermind!")
     gives_feedback = "n"
+    pcstrat = "n"
     while True:
         who_is_playing = input("Raadt de speler? (y/n) ")
         if who_is_playing.lower() == "y":
@@ -78,7 +81,7 @@ def player_game():
             guess_input = input("Doe een gok: ")
             guess_list = guess_input.upper().replace(" ", "").split(",")
             # print(guess_list)
-            guess_response = auto_feedback(guess_list, code)
+            guess_response = fb.auto_feedback(guess_list, code)
             steps += 1
             right_color_str = ""
             if guess_response[0] > 0:
@@ -120,7 +123,6 @@ def player_game():
 
 
 def pc_game(feedback, strat):
-    #strat = "zelfbedacht"
     manual_feedback = False
     if feedback == "y":
         manual_feedback = True
@@ -134,52 +136,41 @@ def pc_game(feedback, strat):
                 for d in colors:
                     plausible_codes.append([a["Afkorting"], b["Afkorting"], c["Afkorting"], d["Afkorting"]])
     n = 0
-    fb = 0, 0
+    feedback = 0, 0
     while True:
         print(board)
-        if strat == "random":
-            guess_list = random_guess()
-
-        if manual_feedback:
+        if strat == "simple":
             if n > 0:
-                plausible_codes = simple_strat(plausible_codes, fb, guess_list)
+                plausible_codes = mastermindalgo.simple_algortime(plausible_codes, feedback, guess_list)
             else:
                 n += 1
             guess_list = random.choice(plausible_codes)
-            guess_response = man_feedback(guess_list, code)
-            fb = guess_response
-        else:
-            if strat == "simple":
-                if n > 0:
-                    plausible_codes = simple_strat(plausible_codes, fb, guess_list)
-                else:
-                    n += 1
-                guess_list = random.choice(plausible_codes)
-                guess_response = auto_feedback(guess_list, code)
-                fb = guess_response
-            elif strat == "worstcase":
-                if n > 0:
-                    plausible_codes = simple_strat(plausible_codes, fb, guess_list)
-                else:
-                    n += 1
-                    #Best guess based on expected size
-                guess_list = calcbestcase(plausible_codes)
-                guess_response = auto_feedback(guess_list, code)
-                fb = guess_response
-            elif strat == "zelfbedacht":
-                if n > 0:
-                    plausible_codes = beetjelogicalijst(plausible_codes, fb, guess_list)
-                else:
-                    n += 1
-                    #Best guess based on expected size
-                guess_list = plausible_codes[0]
-                guess_response = auto_feedback(guess_list, code)
-                fb = guess_response
+        elif strat == "worstcase":
+            if n > 0:
+                plausible_codes = mastermindalgo.simple_algortime(plausible_codes, feedback, guess_list)
+            else:
+                n += 1
+                #Best guess based on expected size
+            guess_list = mastermindalgo.best_worstcase_algortime(plausible_codes)
 
-        # if manual_feedback:
-        #     guess_response = man_feedback(guess_list, code)
-        # else:
-        #     guess_response = auto_feedback(guess_list, code)
+        elif strat == "zelfbedacht":
+            if n > 0:
+                plausible_codes = mastermindalgo.selfmade_algortime(plausible_codes, feedback, guess_list)
+            else:
+                n += 1
+                #Best guess based on expected size
+            guess_list = plausible_codes[0]
+
+        elif strat == "random":
+            guess_list = mastermindalgo.random_guess(colors)
+
+        if manual_feedback:
+            guess_response = fb.manual_feedback(guess_list, code)
+            feedback = guess_response
+        else:
+            guess_response = fb.auto_feedback(guess_list, code)
+            feedback = guess_response
+
         steps += 1
         right_color_str = ""
         if guess_response[0] > 0:
@@ -197,131 +188,8 @@ def pc_game(feedback, strat):
             break
 
 
-def beetjelogicalijst(possible_combis, feedback, guess):
-    new_list = []
-    if guess[0] and guess[1] and guess[2] == guess[3]:
-        lastguessnum = guess[0]
-        if feedback == (0,0):
-            for i in possible_combis:
-                if guess[0] not in i:
-                    new_list.append(i)
-        else:
-            new_list = possible_combis
-        print("INT", int(guess[0]))
-        if int(guess[0]) <= 6:
-            if guess in new_list:
-                print("REMOVED", guess)
-                new_list.remove(guess)
-            new_list.insert(0, [f"{int(guess[0])+1}", f"{int(guess[0])+1}", f"{int(guess[0])+1}", f"{int(guess[0])+1}"])
-    else:
-        new_list = possible_combis
-        new_list.remove(guess)
-        random.shuffle(new_list)
-    return new_list
 
 
-def beetjelogica():
-
-    return
-
-
-def random_guess():
-    guess_list = []
-    for i in range(0, 4):
-        guess_list.append(colors[random.randint(0, 5)]["Afkorting"])
-    return guess_list
-
-
-def simple_strat(possible_combis, feedback, guess):
-    print(len(possible_combis), " left")
-    new_list = []
-    for i in possible_combis:
-        if auto_feedback(guess, i) == feedback:
-            new_list.append(i)
-    print(len(new_list), " after left")
-    return new_list
-
-def calcbestcase(possible_combis):
-    ansdict = {}
-    for i in possible_combis:
-        ansdict[f"{i}"] = []
-        for j in possible_combis:
-            fb = auto_feedback(i, j)
-            ansdict[f"{i}"].append(fb)
-    allhighest = []
-    for key in ansdict:
-        #print(key)
-        unilist = []
-        countlist = []
-        q = ansdict[f"{key}"]
-        for i in q:
-            if i not in unilist:
-                unilist.append(i)
-        for i in unilist:
-            countlist.append(q.count(i))
-        highest = max(countlist)
-        allhighest.append([key, unilist[countlist.index(highest)], highest])
-
-    allcounts = []
-    for i in allhighest:
-        allcounts.append(i[2])
-    lowest = min(allcounts)
-    options = []
-    for i in allhighest:
-        if i[2] <= lowest:
-            options.append(i)
-    print("RETURNING ", ast.literal_eval(options[0][0]))
-    print(len(options), " options left")
-    return ast.literal_eval(options[0][0])
-
-def auto_feedback(guesslst, code):
-    #print(guesslst)
-    #print("g", guesslst)
-    # right_color = 0
-    # right_place = 0
-    # for g in range(0,len(guesslst)):
-    #     if guesslst[g] == code[g]:
-    #         right_place += 1
-    #     if guesslst[g] in code:
-    #         right_color += 1
-    # print(right_color, right_place)
-    # right_color = right_color-right_place
-    # print(right_color)
-
-    # Check if color is in code
-    right_color = 0
-    right_place = 0
-    matched = []
-    tmp_guesslst = []
-    tmp_code = []
-    for g in range(0, len(guesslst)):
-        if guesslst[g] == code[g]:
-            right_place += 1
-            tmp = code[g]
-            tmp_guesslst.append(tmp)
-            tmp_code.append(tmp)
-    guesslst2 = [x for x in guesslst if x not in tmp_guesslst]
-    code2 = [x for x in code if x not in tmp_code]
-    for g in range(0, len(guesslst2)):
-        if guesslst2[g] in code2:
-            right_color += 1
-    return right_color, right_place
-
-
-def man_feedback(guesslst, code):
-    while True:
-        try:
-            print("{:^10} {:^10} {:^10} {:^10}\n".format(guesslst[0], guesslst[1], guesslst[2], guesslst[3]))
-            right_color = int(input("Hoeveel zitten in de code maar niet op de juiste plek? "))
-            right_place = int(input("Hoeveel zitten op de juiste plek en hebben de juiste waarde? "))
-            if auto_feedback(guesslst, code) != (right_color, right_place):
-                raise Exception
-            else:
-                return right_color, right_place
-        except ValueError:
-            print("Geef geldige waarde")
-        except Exception:
-            print("De feedback die je geeft is niet juist! ", auto_feedback(guesslst, code))
 
 
 # def set_code(code):
@@ -343,7 +211,7 @@ def game():
     if settings[0] == "y":
         player_game()
     if settings[0] == "n":
-        pc_game(settings[1])
+        pc_game(settings[1], settings[2])
 
 
 game()

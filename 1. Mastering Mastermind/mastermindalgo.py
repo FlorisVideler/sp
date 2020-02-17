@@ -1,4 +1,5 @@
-
+import feedback as fb
+import ast, random
 
 def random_guess(colors):
     guess_list = []
@@ -11,7 +12,7 @@ def simple_algortime(possible_combis, feedback, guess):
     print(len(possible_combis), " left")
     new_list = []
     for i in possible_combis:
-        if mastermind.auto_feedback(guess, i) == feedback:
+        if fb.auto_feedback(guess, i) == feedback:
             new_list.append(i)
     print(len(new_list), " after left")
     return new_list
@@ -21,8 +22,8 @@ def best_worstcase_algortime(possible_combis):
     for i in possible_combis:
         ansdict[f"{i}"] = []
         for j in possible_combis:
-            fb = auto_feedback(i, j)
-            ansdict[f"{i}"].append(fb)
+            feefback = fb.auto_feedback(i, j)
+            ansdict[f"{i}"].append(feefback)
     allhighest = []
     for key in ansdict:
         #print(key)
