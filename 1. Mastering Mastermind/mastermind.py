@@ -40,7 +40,8 @@ def player_game():
     while True:
         try:
             print(
-                "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n=========================================================")
+                "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                "\n\n\n\n\n\n\n\n\n\n\n\n\n=========================================================")
             print(board)
             guess_input = input("Doe een gok: ")
             guess_list = guess_input.upper().replace(" ", "").split(",")
@@ -61,30 +62,15 @@ def player_game():
                 break
         except Exception as ex:
             print("GEEN GELDIGE INPUT!")
-        # try:
-        #     guess_list = guess_input.upper().replace(" ", "").split(",")
-        #     # print(guess_list)
-        #     guess_response = auto_feedback(guess_list, code)
-        #     steps += 1
-        #     right_color_str = ""
-        #     if guess_response[0] > 0:
-        #         right_color_str = "?" * guess_response[0]
-        #     right_place_str = ""
-        #     if guess_response[1] > 0:
-        #         right_place_str = "!" * guess_response[1]
-        #     board += "{:^10} {:^10} {:^10} {:^10} || {:^10} {:^10}\n".format(guess_list[0], guess_list[1],
-        #                                                                      guess_list[2], guess_list[3],
-        #                                                                      right_place_str, right_color_str)
-        #     if guess_response[1] == 4:
-        #         print(f"WINNER WINNER CHICKEN DINNER.\nJE HEBT DE CODE GERADEN IN {steps} STAPPEN!")
-        #         break
-        #     # print(guess_response)
-        # except Exception as ex:
-        #     print("GEEN GELDIGE INPUT!")
-        #     template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-        #     message = template.format(type(ex).__name__, ex.args)
-        #     print(message)
 
+def generate_all_codes():
+    lst = []
+    for a in colors:
+        for b in colors:
+            for c in colors:
+                for d in colors:
+                    lst.append([a, b, c, d])
+    return lst
 
 def pc_game(feedback, strat):
     manual_feedback = False
@@ -93,33 +79,29 @@ def pc_game(feedback, strat):
     board = ""
     steps = 0
     code = input("Verzin een code: ").upper().replace(" ", "").split(",")
-    plausible_codes = []
-    for a in colors:
-        for b in colors:
-            for c in colors:
-                for d in colors:
-                    plausible_codes.append([a, b, c, d])
+    plausible_codes = generate_all_codes()
     n = 0
     feedback = 0, 0
     while True:
         print(board)
         if strat == "simple":
+            #CHECK KAN IN FUNCTIE
             if n > 0:
-                plausible_codes = mastermindalgo.simple_algortime(plausible_codes, feedback, guess_list)
+                plausible_codes = mastermindalgo.simple_algorithm(plausible_codes, feedback, guess_list)
             else:
                 n += 1
             guess_list = random.choice(plausible_codes)
         elif strat == "worstcase":
             if n > 0:
-                plausible_codes = mastermindalgo.simple_algortime(plausible_codes, feedback, guess_list)
+                plausible_codes = mastermindalgo.simple_algorithm(plausible_codes, feedback, guess_list)
             else:
                 n += 1
                 # Best guess based on expected size
-            guess_list = mastermindalgo.best_worstcase_algortime(plausible_codes)
+            guess_list = mastermindalgo.best_worstcase_algorithm(plausible_codes)
 
         elif strat == "zelfbedacht":
             if n > 0:
-                plausible_codes = mastermindalgo.selfmade_algortime(plausible_codes, feedback, guess_list)
+                plausible_codes = mastermindalgo.selfmade_algorithm(plausible_codes, feedback, guess_list)
             else:
                 n += 1
                 # Best guess based on expected size

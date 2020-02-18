@@ -1,36 +1,22 @@
 def auto_feedback(guesslst, code):
-    #print(guesslst)
-    #print("g", guesslst)
-    # right_color = 0
-    # right_place = 0
-    # for g in range(0,len(guesslst)):
-    #     if guesslst[g] == code[g]:
-    #         right_place += 1
-    #     if guesslst[g] in code:
-    #         right_color += 1
-    # print(right_color, right_place)
-    # right_color = right_color-right_place
-    # print(right_color)
-
     # Check if color is in code
     right_color = 0
     right_place = 0
     matched = []
     tmp_guesslst = []
     tmp_code = []
-    for g in range(0, len(guesslst)):
-        if guesslst[g] == code[g]:
+    for i in range(0, len(guesslst)):
+        if guesslst[i] == code[i]:
             right_place += 1
-            tmp = code[g]
+            tmp = code[i]
             tmp_guesslst.append(tmp)
             tmp_code.append(tmp)
     guesslst2 = [x for x in guesslst if x not in tmp_guesslst]
     code2 = [x for x in code if x not in tmp_code]
-    for g in range(0, len(guesslst2)):
-        if guesslst2[g] in code2:
+    for i in range(0, len(guesslst2)):
+        if guesslst2[i] in code2:
             right_color += 1
     return right_color, right_place
-
 
 
 def manual_feedback(guesslst, code):
