@@ -2,7 +2,7 @@ import feedback as fb
 import ast, random
 
 
-#Basicly just do a random guess, pretty easy
+# Basicly just do a random guess, pretty easy
 def random_guess(colors):
     guess_list = []
     for i in range(0, 4):
@@ -10,7 +10,7 @@ def random_guess(colors):
     return guess_list
 
 
-#uses the simple strategy from YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
+# uses the simple strategy from YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
 def simple_algortime(possible_combis, feedback, guess):
     print(len(possible_combis), " left")
     new_list = []
@@ -20,7 +20,8 @@ def simple_algortime(possible_combis, feedback, guess):
     print(len(new_list), " after left")
     return new_list
 
-#uses the worst case strategy from YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
+
+# uses the worst case strategy from YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
 def best_worstcase_algortime(possible_combis):
     ansdict = {}
     for i in possible_combis:
@@ -30,7 +31,7 @@ def best_worstcase_algortime(possible_combis):
             ansdict[f"{i}"].append(feefback)
     allhighest = []
     for key in ansdict:
-        #print(key)
+        # print(key)
         unilist = []
         countlist = []
         q = ansdict[f"{key}"]
@@ -59,7 +60,7 @@ def selfmade_algortime(possible_combis, feedback, guess):
     new_list = []
     if guess[0] and guess[1] and guess[2] == guess[3]:
         lastguessnum = guess[0]
-        if feedback == (0,0):
+        if feedback == (0, 0):
             for i in possible_combis:
                 if guess[0] not in i:
                     new_list.append(i)
@@ -70,7 +71,8 @@ def selfmade_algortime(possible_combis, feedback, guess):
             if guess in new_list:
                 print("REMOVED", guess)
                 new_list.remove(guess)
-            new_list.insert(0, [f"{int(guess[0])+1}", f"{int(guess[0])+1}", f"{int(guess[0])+1}", f"{int(guess[0])+1}"])
+            new_list.insert(0, [f"{int(guess[0]) + 1}", f"{int(guess[0]) + 1}", f"{int(guess[0]) + 1}",
+                                f"{int(guess[0]) + 1}"])
     else:
         new_list = possible_combis
         new_list.remove(guess)
