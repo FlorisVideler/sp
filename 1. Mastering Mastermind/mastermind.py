@@ -2,38 +2,7 @@ import random, ast
 import mastermindalgo
 import feedback as fb
 
-colors = [
-    {
-        "Kleur": "Groen",
-        # "Afkorting": "G"
-        "Afkorting": "1"
-    },
-    {
-        "Kleur": "Rood",
-        # "Afkorting": "R"
-        "Afkorting": "2"
-    },
-    {
-        "Kleur": "Blauw",
-        "Afkorting": "3"
-        # "Afkorting": "B"
-    },
-    {
-        "Kleur": "Oranje",
-        # "Afkorting": "O"
-        "Afkorting": "4"
-    },
-    {
-        "Kleur": "Wit",
-        # "Afkorting": "W"
-        "Afkorting": "5"
-    },
-    {
-        "Kleur": "Paars",
-        "Afkorting": "6"
-        # "Afkorting": "P"
-    }
-]
+colors = ["1", "2", "3", "4", "5", "6"]
 
 code_global = []
 
@@ -66,7 +35,7 @@ def player_game():
     # Set code
     code = []
     for i in range(0, 4):
-        code.append(colors[random.randint(0, 5)]["Afkorting"])
+        code.append(colors[random.randint(0, 5)])
     print(code)
     while True:
         try:
@@ -129,7 +98,7 @@ def pc_game(feedback, strat):
         for b in colors:
             for c in colors:
                 for d in colors:
-                    plausible_codes.append([a["Afkorting"], b["Afkorting"], c["Afkorting"], d["Afkorting"]])
+                    plausible_codes.append([a, b, c, d])
     n = 0
     feedback = 0, 0
     while True:
@@ -145,7 +114,7 @@ def pc_game(feedback, strat):
                 plausible_codes = mastermindalgo.simple_algortime(plausible_codes, feedback, guess_list)
             else:
                 n += 1
-                #Best guess based on expected size
+                # Best guess based on expected size
             guess_list = mastermindalgo.best_worstcase_algortime(plausible_codes)
 
         elif strat == "zelfbedacht":
@@ -153,7 +122,7 @@ def pc_game(feedback, strat):
                 plausible_codes = mastermindalgo.selfmade_algortime(plausible_codes, feedback, guess_list)
             else:
                 n += 1
-                #Best guess based on expected size
+                # Best guess based on expected size
             guess_list = plausible_codes[0]
 
         elif strat == "random":
@@ -183,14 +152,9 @@ def pc_game(feedback, strat):
             break
 
 
-
-
-
-
-
 def explain():
-    for c in colors:
-        print(f'{c["Kleur"]} = {c["Afkorting"]}')
+    # for c in colors:
+    #     print(f'{c["Kleur"]} = {c["Afkorting"]}')
 
     print("Beschikbare algoritmes: \n"
           "-Simple\n"
