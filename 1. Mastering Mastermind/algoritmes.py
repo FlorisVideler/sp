@@ -7,7 +7,7 @@
 #     return guess_list
 #
 #
-# def simple_algortime(possible_combis, feedback, guess):
+# def simple_algorithm(possible_combis, feedback, guess):
 #     print(len(possible_combis), " left")
 #     new_list = []
 #     for i in possible_combis:
@@ -16,7 +16,7 @@
 #     print(len(new_list), " after left")
 #     return new_list
 #
-# def best_worstcase_algortime(possible_combis):
+# def best_worstcase_algorithm(possible_combis):
 #     ansdict = {}
 #     for i in possible_combis:
 #         ansdict[f"{i}"] = []
@@ -50,7 +50,7 @@
 #     return ast.literal_eval(options[0][0])
 #
 #
-# def selfmade_algortime(possible_combis, feedback, guess):
+# def selfmade_algorithm(possible_combis, feedback, guess):
 #     new_list = []
 #     if guess[0] and guess[1] and guess[2] == guess[3]:
 #         lastguessnum = guess[0]

@@ -1,6 +1,6 @@
 import feedback as fb
-import ast, random
-
+import ast
+import random
 
 # Basicly just do a random guess, pretty easy
 def random_guess(colors):
@@ -11,7 +11,7 @@ def random_guess(colors):
 
 
 # uses the simple strategy from YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
-def simple_algortime(possible_combis, feedback, guess):
+def simple_algorithm(possible_combis, feedback, guess):
     print(len(possible_combis), " left")
     new_list = []
     for i in possible_combis:
@@ -22,33 +22,33 @@ def simple_algortime(possible_combis, feedback, guess):
 
 
 # uses the worst case strategy from YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
-def best_worstcase_algortime(possible_combis):
+def best_worstcase_algorithm(possible_combis):
     ansdict = {}
     for i in possible_combis:
-        ansdict[f"{i}"] = []
+        ansdict[i] = []
         for j in possible_combis:
-            feefback = fb.auto_feedback(i, j)
-            ansdict[f"{i}"].append(feefback)
-    allhighest = []
+            feedback = fb.auto_feedback(i, j)
+            ansdict[i].append(feedback)
+    all_highest = []
     for key in ansdict:
         # print(key)
         unilist = []
         countlist = []
-        q = ansdict[f"{key}"]
+        q = ansdict[key]
         for i in q:
             if i not in unilist:
                 unilist.append(i)
         for i in unilist:
             countlist.append(q.count(i))
         highest = max(countlist)
-        allhighest.append([key, unilist[countlist.index(highest)], highest])
+        all_highest.append([key, unilist[countlist.index(highest)], highest])
 
     allcounts = []
-    for i in allhighest:
+    for i in all_highest:
         allcounts.append(i[2])
     lowest = min(allcounts)
     options = []
-    for i in allhighest:
+    for i in all_highest:
         if i[2] <= lowest:
             options.append(i)
     print("RETURNING ", ast.literal_eval(options[0][0]))
@@ -56,10 +56,10 @@ def best_worstcase_algortime(possible_combis):
     return ast.literal_eval(options[0][0])
 
 
-def selfmade_algortime(possible_combis, feedback, guess):
+def selfmade_algorithm(possible_combis, feedback, guess):
     new_list = []
     if guess[0] and guess[1] and guess[2] == guess[3]:
-        lastguessnum = guess[0]
+        last_guesse_num = guess[0]
         if feedback == (0, 0):
             for i in possible_combis:
                 if guess[0] not in i:
