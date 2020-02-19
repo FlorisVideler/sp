@@ -6,35 +6,36 @@ import ast, random
 def random_guess(colors):
     guess_list = []
     for i in range(0, 4):
-        guess_list.append(colors[random.randint(0, 5)]["Afkorting"])
+        guess_list.append(colors[random.randint(0, 5)])
     return guess_list
 
 
 # uses the simple strategy from YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
 def simple_algorithm(possible_combis, feedback, guess):
-    print(len(possible_combis), " left")
+    print(len(possible_combis), " left before")
     new_list = []
     for i in possible_combis:
         if fb.auto_feedback(guess, i) == feedback:
             new_list.append(i)
-    print(len(new_list), " after left")
+    print(len(new_list), " left after")
     return new_list
 
 
-# uses the worst case strategy from YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
+# Uses the worst case strategy from YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
+# First run takes some time
 def best_worstcase_algorithm(possible_combis):
-    ansdict = {}
+    worst_dict = {}
     for i in possible_combis:
-        ansdict[f"{i}"] = []
+        worst_dict[f"{i}"] = []
         for j in possible_combis:
             feedback = fb.auto_feedback(i, j)
-            ansdict[f"{i}"].append(feedback)
+            worst_dict[f"{i}"].append(feedback)
     all_highest = []
-    for key in ansdict:
+    for key in worst_dict:
         # print(key)
         unilist = []
         countlist = []
-        q = ansdict[key]
+        q = worst_dict[key]
         for i in q:
             if i not in unilist:
                 unilist.append(i)
@@ -51,12 +52,10 @@ def best_worstcase_algorithm(possible_combis):
     for i in all_highest:
         if i[2] <= lowest:
             options.append(i)
-    print("RETURNING ", ast.literal_eval(options[0][0]))
-    print(len(options), " options left")
     return ast.literal_eval(options[0][0])
 
 
-# My selfmade algorithm
+# My selfmade algorithm, checks
 def selfmade_algorithm(possible_combis, feedback, guess):
     new_list = []
     if guess[0] and guess[1] and guess[2] == guess[3]:
@@ -67,8 +66,7 @@ def selfmade_algorithm(possible_combis, feedback, guess):
                     new_list.append(i)
         else:
             new_list = possible_combis
-        print("INT", int(guess[0]))
-        if int(guess[0]) <= 6:
+        if int(guess[0]) < 6:
             if guess in new_list:
                 print("REMOVED", guess)
                 new_list.remove(guess)

@@ -1,10 +1,9 @@
 def auto_feedback(guesslst, code):
-    # Check if color is in code
     right_color = 0
     right_place = 0
-    matched = []
     tmp_guesslst = []
     tmp_code = []
+    # Check for black pins
     for i in range(0, len(guesslst)):
         if guesslst[i] == code[i]:
             right_place += 1
@@ -13,6 +12,7 @@ def auto_feedback(guesslst, code):
             tmp_code.append(tmp)
     guesslst2 = [x for x in guesslst if x not in tmp_guesslst]
     code2 = [x for x in code if x not in tmp_code]
+    # Check for white pins
     for i in range(0, len(guesslst2)):
         if guesslst2[i] in code2:
             right_color += 1

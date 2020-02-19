@@ -63,6 +63,7 @@ def player_game():
         except Exception as ex:
             print("GEEN GELDIGE INPUT!")
 
+
 def generate_all_codes():
     lst = []
     for a in colors:
@@ -71,6 +72,7 @@ def generate_all_codes():
                 for d in colors:
                     lst.append([a, b, c, d])
     return lst
+
 
 def pc_game(feedback, strat):
     manual_feedback = False
@@ -85,7 +87,7 @@ def pc_game(feedback, strat):
     while True:
         print(board)
         if strat == "simple":
-            #CHECK KAN IN FUNCTIE
+            # CHECK KAN IN FUNCTIE
             if n > 0:
                 plausible_codes = mastermindalgo.simple_algorithm(plausible_codes, feedback, guess_list)
             else:
@@ -98,7 +100,6 @@ def pc_game(feedback, strat):
                 n += 1
                 # Best guess based on expected size
             guess_list = mastermindalgo.best_worstcase_algorithm(plausible_codes)
-
         elif strat == "zelfbedacht":
             if n > 0:
                 plausible_codes = mastermindalgo.selfmade_algorithm(plausible_codes, feedback, guess_list)
@@ -106,7 +107,6 @@ def pc_game(feedback, strat):
                 n += 1
                 # Best guess based on expected size
             guess_list = plausible_codes[0]
-
         elif strat == "random":
             guess_list = mastermindalgo.random_guess(colors)
 
@@ -135,14 +135,15 @@ def pc_game(feedback, strat):
 
 
 def explain():
-    # for c in colors:
-    #     print(f'{c["Kleur"]} = {c["Afkorting"]}')
-
+    print("In dit spel wordt gespeeld met de nummers 1 t/m 6")
+    print("\"!\" = zwarte pin\n"
+          "\"?\" = wiite pin")
     print("Beschikbare algoritmes: \n"
-          "-Simple\n"
-          "-Zelfbedacht\n"
-          "-Beste worstcase\n"
-          "-Random")
+          "-simple\n"
+          "-zelfbedacht\n"
+          "-worstcase\n"
+          "-random")
+    print("Als er op een code of gok wordt gevraagd neem dan het volgende format: 1, 2, 3, 4")
 
 
 def game():
