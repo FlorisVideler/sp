@@ -45,23 +45,17 @@ def player_game():
             print(board)
             guess_input = input("Doe een gok: ")
             guess_list = guess_input.upper().replace(" ", "").split(",")
-            # print(guess_list)
             guess_response = fb.auto_feedback(guess_list, code)
+            board = edit_board(board, guess_list, guess_response)
             steps += 1
-            right_color_str = ""
-            if guess_response[0] > 0:
-                right_color_str = "?" * guess_response[0]
-            right_place_str = ""
-            if guess_response[1] > 0:
-                right_place_str = "!" * guess_response[1]
-            board += "{:^10} {:^10} {:^10} {:^10} || {:^10} {:^10}\n".format(guess_list[0], guess_list[1],
-                                                                             guess_list[2], guess_list[3],
-                                                                             right_place_str, right_color_str)
             if guess_response[1] == 4:
                 print(f"WINNER WINNER CHICKEN DINNER.\nJE HEBT DE CODE GERADEN IN {steps} STAPPEN!")
                 break
         except Exception as ex:
             print("GEEN GELDIGE INPUT!")
+
+
+
 
 
 def generate_all_codes():
@@ -87,7 +81,6 @@ def pc_game(feedback, strat):
     while True:
         print(board)
         if strat == "simple":
-            # CHECK KAN IN FUNCTIE
             if n > 0:
                 plausible_codes = mastermindalgo.simple_algorithm(plausible_codes, feedback, guess_list)
             else:
@@ -118,20 +111,24 @@ def pc_game(feedback, strat):
             feedback = guess_response
 
         steps += 1
-        right_color_str = ""
-        if guess_response[0] > 0:
-            right_color_str = "?" * guess_response[0]
-        right_place_str = ""
-        if guess_response[1] > 0:
-            right_place_str = "!" * guess_response[1]
-        print(guess_list)
-        board += "{:^10} {:^10} {:^10} {:^10} || {:^10} {:^10}\n".format(guess_list[0], guess_list[1],
-                                                                         guess_list[2], guess_list[3],
-                                                                         right_place_str, right_color_str)
+        board = edit_board(board, guess_list, guess_response)
         if guess_response[1] == 4:
             print(board)
             print(f"WINNER WINNER CHICKEN DINNER.\nJE HEBT DE CODE GERADEN IN {steps} STAPPEN!")
             break
+
+
+def edit_board(board, guess_list, guess_response):
+    right_color_str = ""
+    if guess_response[0] > 0:
+        right_color_str = "?" * guess_response[0]
+    right_place_str = ""
+    if guess_response[1] > 0:
+        right_place_str = "!" * guess_response[1]
+    board += "{:^10} {:^10} {:^10} {:^10} || {:^10} {:^10}\n".format(guess_list[0], guess_list[1],
+                                                                     guess_list[2], guess_list[3],
+                                                                     right_place_str, right_color_str)
+    return board
 
 
 def explain():
