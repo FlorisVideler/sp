@@ -4,8 +4,6 @@ import feedback as fb
 
 colors = ["1", "2", "3", "4", "5", "6"]
 
-code_global = []
-
 
 def menu():
     print("Welkom to mastermind!")
@@ -44,7 +42,7 @@ def player_game():
                 "\n\n\n\n\n\n\n\n\n\n\n\n\n=========================================================")
             print(board)
             guess_input = input("Doe een gok: ")
-            guess_list = guess_input.upper().replace(" ", "").split(",")
+            guess_list = guess_input.replace(" ", "").split(",")
             guess_response = fb.auto_feedback(guess_list, code)
             board = edit_board(board, guess_list, guess_response)
             steps += 1
@@ -53,9 +51,6 @@ def player_game():
                 break
         except Exception as ex:
             print("GEEN GELDIGE INPUT!")
-
-
-
 
 
 def generate_all_codes():
@@ -74,7 +69,7 @@ def pc_game(feedback, strat):
         manual_feedback = True
     board = ""
     steps = 0
-    code = input("Verzin een code: ").upper().replace(" ", "").split(",")
+    code = input("Verzin een code: ").replace(" ", "").split(",")
     plausible_codes = generate_all_codes()
     n = 0
     feedback = 0, 0
@@ -105,10 +100,9 @@ def pc_game(feedback, strat):
 
         if manual_feedback:
             guess_response = fb.manual_feedback(guess_list, code)
-            feedback = guess_response
         else:
             guess_response = fb.auto_feedback(guess_list, code)
-            feedback = guess_response
+        feedback = guess_response
 
         steps += 1
         board = edit_board(board, guess_list, guess_response)
@@ -116,6 +110,7 @@ def pc_game(feedback, strat):
             print(board)
             print(f"WINNER WINNER CHICKEN DINNER.\nJE HEBT DE CODE GERADEN IN {steps} STAPPEN!")
             break
+
 
 
 def edit_board(board, guess_list, guess_response):
@@ -152,4 +147,5 @@ def game():
         pc_game(settings[1], settings[2])
 
 
-game()
+if __name__ == "__main__":
+    game()
