@@ -1,4 +1,4 @@
-import psycopg2, csv
+import psycopg2, csv, random
 
 hostname = 'localhost'
 username = 'postgres'
@@ -17,9 +17,11 @@ cur.execute('''
         );
         CREATE TABLE content_recs(
             prodid varchar,
-            segment varchar
+            prodids varchar
         );
         ALTER TABLE collab_recs 
+        ADD FOREIGN KEY (prodid) REFERENCES products(id);
+        ALTER TABLE content_recs 
         ADD FOREIGN KEY (prodid) REFERENCES products(id);
         
         ''')
@@ -85,7 +87,56 @@ def fill_colab_filter_db(filename):
         next(collab)
         cur.copy_from(collab, 'collab_recs', sep=',')
         conn.commit()
-    conn.close()
 
 
-fill_colab_filter_db('collab_recs.csv')
+#fill_colab_filter_db('collab_recs.csv')
+
+
+# Content Filtering
+
+def get_all_products():
+    products = {}
+    query = '''
+        SELECT id, category, subcategory, subsubcategory, targetaudience FROM products LIMIT 1000'''
+    cur.execute(query)
+    rows = cur.fetchall()
+    for row in rows:
+        products[row[0]] = {
+            'cat': row[1],
+            'subcat': row[2],
+            'subsubcat': row[3],
+            'ta': row[4]
+        }
+    return products
+
+def get_content_recs():
+    products = get_all_products()
+    recommendations = {}
+    for product in products:
+        cat = products[product]['cat']
+        subcat = products[product]['subcat']
+        subsubcat = products[product]['subcat']
+        cat_recs = []
+        subcat_recs = []
+        subsubcat_recs = []
+        for rec_product in products:
+            if rec_product != product:
+                if products[rec_product]['cat'] == cat:
+                    cat_recs.append(rec_product)
+                    if products[rec_product]['subcat'] == subcat:
+                        subcat_recs.append(rec_product)
+                        if products[rec_product]['subsubcat'] == subsubcat:
+                            subsubcat_recs.append(subcat_recs)
+        if len(subsubcat_recs) >= 3:
+            recs = random.sample(subsubcat_recs, 3)
+        elif len(subcat_recs) >= 3:
+            recs = random.sample(subcat_recs, 3)
+        elif len(cat_recs) >= 3:
+            recs = random.sample(cat_recs, 3)
+        else:
+            recs = random.sample(list(products.keys()), 3)
+        recommendations[product] = recs
+    print(recommendations)
+
+get_content_recs()
+conn.close()
