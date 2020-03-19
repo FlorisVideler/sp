@@ -89,7 +89,7 @@ def fill_colab_filter_db(filename):
         conn.commit()
 
 
-#fill_colab_filter_db('collab_recs.csv')
+fill_colab_filter_db('collab_recs.csv')
 
 
 # Content Filtering
@@ -97,7 +97,7 @@ def fill_colab_filter_db(filename):
 def get_all_products():
     products = {}
     query = '''
-        SELECT id, category, subcategory, subsubcategory, targetaudience FROM products LIMIT 1000'''
+        SELECT id, category, subcategory, subsubcategory, targetaudience FROM products'''
     cur.execute(query)
     rows = cur.fetchall()
     for row in rows:
@@ -126,7 +126,7 @@ def get_content_recs():
                     if products[rec_product]['subcat'] == subcat:
                         subcat_recs.append(rec_product)
                         if products[rec_product]['subsubcat'] == subsubcat:
-                            subsubcat_recs.append(subcat_recs)
+                            subsubcat_recs.append(rec_product)
         if len(subsubcat_recs) >= 3:
             recs = random.sample(subsubcat_recs, 3)
         elif len(subcat_recs) >= 3:
@@ -136,7 +136,29 @@ def get_content_recs():
         else:
             recs = random.sample(list(products.keys()), 3)
         recommendations[product] = recs
-    print(recommendations)
+    return recommendations
 
-get_content_recs()
+def fill_content_filter_csv(filename):
+    recommendations = get_content_recs()
+    with open(filename, 'w', newline='') as content:
+        content_fieldnames = ['prodid', 'prodids']
+        content_writer = csv.DictWriter(content, fieldnames=content_fieldnames)
+        content_writer.writeheader()
+        for product in recommendations:
+            content_writer.writerow(
+                {
+                    'prodid': product,
+                    'prodids': ';'.join(recommendations[product])
+                }
+            )
+
+def fill_content_filter_db(filename):
+    fill_content_filter_csv(filename)
+    with open(filename, 'r') as content:
+        next(content)
+        cur.copy_from(content, 'content_recs', sep=',')
+        conn.commit()
+
+
+fill_content_filter_db('content_recs.csv')
 conn.close()
