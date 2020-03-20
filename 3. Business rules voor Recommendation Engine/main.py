@@ -29,7 +29,7 @@ cur.execute('''
 conn.commit()
 
 
-# Collaborative Filtering
+# Collaborative Filtering op basis van segment en device type
 def get_segments():
     segments = []
     device_types = []
@@ -113,10 +113,7 @@ def fill_colab_filter_db(filename):
         conn.commit()
 
 
-fill_colab_filter_db('collab_recs.csv')
-
-
-# Content Filtering
+# Content Filtering op basis van category, subcategory en subsubcategory
 
 def get_all_products():
     products = {}
@@ -132,6 +129,7 @@ def get_all_products():
             'ta': row[4]
         }
     return products
+
 
 def get_content_recs():
     products = get_all_products()
@@ -162,6 +160,7 @@ def get_content_recs():
         recommendations[product] = recs
     return recommendations
 
+
 def fill_content_filter_csv(filename):
     recommendations = get_content_recs()
     with open(filename, 'w', newline='') as content:
@@ -176,6 +175,7 @@ def fill_content_filter_csv(filename):
                 }
             )
 
+
 def fill_content_filter_db(filename):
     fill_content_filter_csv(filename)
     with open(filename, 'r') as content:
@@ -184,5 +184,8 @@ def fill_content_filter_db(filename):
         conn.commit()
 
 
-#fill_content_filter_db('content_recs.csv')
+# Run content filtering
+fill_content_filter_db('content_recs.csv')
+# Run collaborative filtering
+fill_colab_filter_db('collab_recs.csv')
 conn.close()
