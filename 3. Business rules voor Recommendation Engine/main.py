@@ -13,7 +13,8 @@ cur.execute('''
         DROP TABLE IF EXISTS content_recs;
         CREATE TABLE collab_recs(
             prodid varchar,
-            segment varchar
+            segment varchar,
+            devicetype varchar
         );
         CREATE TABLE content_recs(
             prodid varchar,
@@ -31,29 +32,51 @@ conn.commit()
 # Collaborative Filtering
 def get_segments():
     segments = []
-    query = '''
-    SELECT segment FROM sessions 
-    GROUP BY segment'''
-    cur.execute(query)
+    device_types = []
+    segment_query = '''
+        SELECT segment FROM sessions 
+        GROUP BY segment'''
+    device_type_query = '''
+        SELECT devicetype FROM sessions
+        GROUP BY devicetype'''
+    cur.execute(segment_query)
     rows = cur.fetchall()
     for row in rows:
         segment = row[0]
         if segment not in segments:
             segments.append(segment)
-    return segments
+    cur.execute(device_type_query)
+    rows = cur.fetchall()
+    for row in rows:
+        device_type = row[0]
+        if device_type not in device_types:
+            device_types.append(device_type)
+    segments_devices = []
+    for segment in segments:
+        for device_type in device_types:
+            if device_type is not None and segment is not None:
+                segments_devices.append(segment + ":" + device_type)
+    return segments_devices
 
 
 def collab_filter_recommendations():
     recommendations = {}
-    segments = get_segments()
-    for segment in segments:
-        if segment is not None:
-            recommendations[segment] = []
+    segments_devices = get_segments()
+    for segment_device in segments_devices:
+        segment = segment_device.split(':')[0]
+        device = segment_device.split(':')[1]
+        if segment is not None and device is not None:
+
+            index = segment + ":" + device
+            recommendations[index] = []
             query = f'''
                 SELECT count(prodid), prodid FROM profiles_previously_viewed
                 WHERE profid in (
-                    SELECT id FROM profiles
-                    WHERE segment = '{segment}'
+                    SELECT profiles.id
+                    FROM sessions
+                    INNER JOIN profiles ON sessions.profid=profiles.id
+                    WHERE profiles.segment = '{segment}'
+                    AND sessions.devicetype = '{device}'
                 )
                 GROUP BY prodid
                 ORDER BY count(prodid) DESC
@@ -61,14 +84,14 @@ def collab_filter_recommendations():
             cur.execute(query)
             rows = cur.fetchall()
             for row in rows:
-                recommendations[segment].append(row[1])
+                recommendations[index].append(row[1])
     return recommendations
 
 
 def fill_colab_filter_csv(filename):
     recommendations = collab_filter_recommendations()
     with open(filename, 'w', newline='') as collab:
-        collab_fieldnames = ['prodid', 'segment']
+        collab_fieldnames = ['prodid', 'segment', 'devicetype']
         collab_writer = csv.DictWriter(collab, fieldnames=collab_fieldnames)
         collab_writer.writeheader()
         for segment in recommendations:
@@ -76,7 +99,8 @@ def fill_colab_filter_csv(filename):
                 collab_writer.writerow(
                     {
                         'prodid': product,
-                        'segment': segment
+                        'segment': segment.split(':')[0],
+                        'devicetype': segment.split(':')[1]
                     }
                 )
 
@@ -160,5 +184,5 @@ def fill_content_filter_db(filename):
         conn.commit()
 
 
-fill_content_filter_db('content_recs.csv')
+#fill_content_filter_db('content_recs.csv')
 conn.close()
